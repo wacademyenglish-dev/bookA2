@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>WOLF LABS | The Library Chronicles (A2)</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400&family=JetBrains+Mono:wght@400;700&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* === THE LIBRARY CHRONICLES THEME (A2 PREMIUM) === */
+        :root {
+            --bg-base: #1a1c18;       
+            --bg-panel: #2a2e26;      
+            --bg-wood: #3e2723;       
+            --bg-paper: #f9f6ef;      
+            --bg-paper-dark: #eee7d5; 
+            --ink-main: #2c1a12;      
+            --ink-light: #5c3a21;     
+            --accent-gold: #d4af37;   
+            --accent-cream: #fdf6e3;  
+            --accent-red: #8b0000;    
+            --accent-green: #2e8b57;  
+            --text-main: #fdf6e3;     
+            --text-muted: #a3aab0;    
+            --border-soft: rgba(212, 175, 55, 0.2);
+            --glow-gold: rgba(212, 175, 55, 0.4);
+        }
+
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.05), transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(139, 0, 0, 0.05), transparent 40%);
+        }
+
+        .font-book { font-family: 'Merriweather', serif; }
+        .font-typewriter { font-family: 'JetBrains Mono', monospace; }
+        .font-spell { font-family: 'Caveat', cursive; }
+
+        /* PANELS & CARDS */
+        .library-panel {
+            background: rgba(42, 46, 38, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-soft);
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(212,175,55,0.05);
+        }
+
+        .magic-page {
+            background-color: var(--bg-paper);
+            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
+            border: 1px solid #e0d4b8;
+            border-radius: 4px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 40px rgba(0,0,0,0.05);
+            color: var(--ink-main);
+        }
+
+        /* HUD TOP */
+        #hud-top {
+            position: fixed; top: 0; left: 0; right: 0; padding: 12px 30px;
+            z-index: 1000; border-bottom: 1px solid var(--border-soft);
+            background: rgba(26, 28, 24, 0.95); backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+        }
+        .hud-bar-container { width: 140px; height: 5px; background: rgba(255,255,255,0.1); overflow: hidden; border-radius: 3px;}
+        .hud-bar-fill { height: 100%; transition: width 0.6s ease; box-shadow: 0 0 10px currentColor;}
+
+        /* CONTENT ARENA */
+        #mission-arena { height: 100vh; padding-bottom: 100px; padding-top: 80px; overflow-y: auto; scroll-behavior: smooth;}
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: var(--bg-wood); border-radius: 4px; border: 1px solid var(--accent-gold); }
+
+        /* BUTTONS */
+        .btn-gold {
+            background: linear-gradient(135deg, #d4af37, #aa8529); color: #1a1c18; border-radius: 6px;
+            font-family: 'Merriweather', serif; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+            transition: all 0.3s ease; border: 1px solid #ffdf73; cursor: pointer; padding: 16px 36px;
+            box-shadow: 0 4px 15px var(--glow-gold); text-shadow: 0 1px 1px rgba(255,255,255,0.4);
+        }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--glow-gold); filter: brightness(1.1); }
+        .btn-gold:active { transform: scale(0.97); }
+
+        /* VISUAL CHOICE (A/B) */
+        .choice-card {
+            position: relative; overflow: hidden; border-radius: 8px; cursor: pointer;
+            transition: all 0.4s ease; border: 2px solid var(--border-soft); height: 320px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); background: var(--bg-panel);
+        }
+        .choice-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; opacity: 0.8;}
+        .choice-card:hover img { transform: scale(1.05); opacity: 1;}
+        .choice-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,28,24,0.95), transparent); }
+        .choice-content { position: absolute; bottom: 0; left: 0; width: 100%; padding: 24px; z-index: 10; text-align: center; }
+        .choice-card.selected { border-color: var(--accent-gold); transform: scale(1.02); box-shadow: 0 10px 40px rgba(212,175,55,0.3); }
+        .choice-card.selected img { opacity: 1; filter: sepia(0.3); }
+
+        /* VISUAL MATCH */
+        .vocab-pill {
+            background: var(--bg-wood); border: 1px solid var(--accent-gold); color: var(--accent-cream);
+            padding: 12px 28px; font-weight: 700; font-size: 1.2rem; font-family: 'Merriweather', serif;
+            border-radius: 4px; cursor: grab; transition: all 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            letter-spacing: 1px;
+        }
+        .vocab-pill:hover { background: var(--accent-gold); color: #1a1c18; transform: translateY(-3px);}
+        .vocab-pill.dragging { opacity: 0.5; cursor: grabbing; transform: scale(1.05); }
+        .match-img-box { width: 100%; height: 180px; border-radius: 4px; background-size: cover; background-position: center; margin-bottom: 15px; border: 2px solid var(--bg-wood); position: relative; overflow: hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);}
+        .match-dropzone {
+            width: 100%; height: 55px; border: 2px dashed var(--text-muted); border-radius: 4px;
+            display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02);
+            transition: all 0.3s ease; color: var(--text-muted); font-family: 'Outfit', sans-serif; font-weight: 500;
+        }
+        .match-dropzone.drag-over { background: rgba(212, 175, 55, 0.1); border-color: var(--accent-gold); color: var(--accent-gold);}
+        .match-dropzone.matched { background: var(--bg-wood); border-color: var(--accent-gold); color: var(--accent-gold); border-style: solid; box-shadow: 0 0 20px rgba(212,175,55,0.4); font-weight: 700; font-size: 1.2rem; font-family: 'Merriweather', serif;}
+
+        /* VIDEO */
+        .video-container { width: 100%; max-width: 900px; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; border: 2px solid var(--border-soft); box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 30px rgba(212, 175, 55, 0.1); position: relative; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+        /* BOOKSHELF (The Sorter) */
+        .bucket-zone {
+            background: rgba(0,0,0,0.4); border: 2px solid var(--bg-wood); border-radius: 8px; border-bottom: 8px solid var(--bg-wood);
+            min-height: 220px; padding: 20px; display: flex; flex-direction: column; align-items: center; transition: 0.3s;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5); position: relative;
+        }
+        .bucket-zone h3 { font-family: 'Merriweather', serif; font-size: 1.8rem; font-weight: 700; color: var(--accent-cream); margin-bottom: 20px; width: 100%; text-align: center; text-shadow: 0 2px 5px rgba(0,0,0,0.8); background: var(--bg-wood); padding: 5px; border-radius: 4px; border: 1px solid var(--accent-gold);}
+        .bucket-zone.drag-over { background: rgba(212, 175, 55, 0.05); border-color: var(--accent-gold); }
+        .bucket-items { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; width: 100%;}
+        .sort-pill { background: var(--bg-panel); border: 1px solid var(--border-soft); padding: 12px 20px; border-radius: 4px; font-weight: 500; cursor: grab; font-size: 1.1rem; font-family: 'Outfit', sans-serif;}
+        .sort-pill.dropped { background: var(--bg-wood); color: var(--accent-gold); border: 1px solid var(--accent-gold); font-weight: 700; cursor: default; pointer-events: none; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-shadow: 0 4px 15px rgba(0,0,0,0.5);}
+
+        /* FLIP CARDS (Bookmarks) */
+        .flip-card { perspective: 1000px; cursor: pointer; height: 320px; }
+        .flip-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
+        .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+        .flip-front, .flip-back {
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 8px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem;
+            background: var(--bg-panel); border: 1px solid var(--border-soft); box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png'); background-blend-mode: overlay;
+        }
+        .flip-front { border-top: 4px solid var(--accent-red); }
+        .flip-back { background: var(--accent-cream); color: #1a1c18; transform: rotateY(180deg); border-top: 4px solid var(--accent-gold); }
+
+        /* TUNER (Reading Lamp) */
+        .tuner-track { width: 80px; height: 40px; background: rgba(0,0,0,0.6); border-radius: 20px; position: relative; cursor: pointer; border: 2px solid var(--border-soft); transition: 0.3s; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);}
+        .tuner-knob { width: 30px; height: 30px; background: var(--text-muted); border-radius: 50%; position: absolute; top: 3px; left: 4px; transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 2px 5px rgba(0,0,0,0.5);}
+        .tuner-track.active { border-color: var(--accent-gold); background: rgba(212,175,55,0.15);}
+        .tuner-track.active .tuner-knob { transform: translateX(38px); background: var(--accent-gold); box-shadow: 0 0 15px var(--accent-gold);}
+
+        /* LOGIC GATE (Node Match) */
+        .logic-node { background: rgba(42, 46, 38, 0.5); border: 1px solid var(--border-soft); color: var(--text-main); padding: 1.5rem; border-radius: 6px; font-weight: 500; font-size: 1.2rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-align: center;}
+        .logic-node:hover:not(.matched) { border-color: var(--accent-gold); transform: translateY(-2px); background: rgba(212,175,55,0.05);}
+        .logic-node.active { border-color: var(--accent-gold); background: rgba(212,175,55,0.15); box-shadow: 0 0 20px rgba(212,175,55,0.2);}
+        .logic-node.matched { background: rgba(46,139,87,0.1); color: var(--accent-green); border-color: var(--accent-green); pointer-events: none; opacity: 0.8; box-shadow: none;}
+
+        /* TYPEWRITER (Gap Fill) */
+        .gap-input { background: transparent; border-bottom: 2px dashed var(--text-muted); color: var(--accent-gold); width: 100px; text-align: center; font-weight: 700; font-size: 2rem; font-family: 'JetBrains Mono', monospace; transition: 0.3s; padding: 0 5px; letter-spacing: 2px;}
+        .gap-input:focus { outline: none; border-bottom-color: var(--accent-gold); border-bottom-style: solid; background: rgba(0,0,0,0.2);}
+        .gap-input.correct { border-bottom-color: var(--accent-green); border-bottom-style: solid; color: var(--accent-green); pointer-events: none; }
+        .gap-input.error { border-bottom-color: var(--accent-red); color: var(--accent-red); animation: shake 0.4s; }
+
+        /* WORD BUILDER */
+        .build-pill { background: var(--bg-wood); border: 1px solid var(--accent-gold); color: var(--accent-cream); padding: 12px 24px; font-weight: 600; font-size: 1.2rem; border-radius: 4px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.4); font-family: 'Merriweather', serif;}
+        .build-pill:hover { border-color: #fff; color: #fff; transform: translateY(-2px); filter: brightness(1.2);}
+        .build-pill.used { opacity: 0; pointer-events: none; transform: scale(0.8); }
+
+        /* MULTIPLE CHOICE (Quiz) */
+        .mc-btn { background: rgba(42, 46, 38, 0.5); border: 1px solid var(--border-soft); color: var(--accent-cream); font-family: 'Merriweather', serif; }
+        .mc-btn:hover { background: var(--bg-wood); border-color: var(--accent-gold); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); color: var(--accent-gold);}
+
+        /* INTERACTIVE READING */
+        .reading-clickable {
+            color: var(--accent-red);
+            font-weight: 700;
+            cursor: pointer;
+            border-bottom: 2px dotted var(--accent-red);
+            transition: all 0.2s;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+        .reading-clickable:hover { background-color: rgba(139,0,0,0.1); }
+        .reading-clickable.active { background-color: var(--accent-red); color: #fff; border-bottom-style: solid; }
+
+        /* PROFILE BUILDER */
+        .profile-input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border-soft); padding: 15px 20px; border-radius: 6px; font-size: 1.2rem; color: var(--accent-gold); margin-bottom: 15px; transition: 0.3s; font-family: 'Merriweather', serif; font-size: 1.5rem;}
+        .profile-input:focus { outline: none; border-color: var(--accent-gold); background: rgba(0,0,0,0.6); box-shadow: 0 0 15px rgba(212,175,55,0.1);}
+        .profile-input::placeholder { color: rgba(255,255,255,0.3); font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 300;}
+        
+        .magic-card-res { background: var(--accent-cream); border: 4px solid var(--bg-wood); border-radius: 8px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); position: relative; overflow: hidden; background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');}
+        .magic-card-res::before { content: 'LIBRARY CARD'; position: absolute; top: 15px; right: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--bg-wood); opacity: 0.7; letter-spacing: 2px; font-weight: bold;}
+
+        /* FOOTER CONSOLE */
+        #nav-console {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
+            background: rgba(26, 28, 24, 0.95); border-top: 1px solid var(--border-soft);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 30px; z-index: 5000; backdrop-filter: blur(10px);
+        }
+        
+        /* DRAWERS (HUD & BLACKBOARD) */
+        .drawer { background: var(--bg-panel); border-left: 1px solid var(--accent-gold); transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); z-index: 5100; box-shadow: -20px 0 50px rgba(0,0,0,0.8);}
+        .drawer.active { transform: translateX(0); }
+
+        /* EFFECTS */
+        .fade-in { animation: fadeIn 0.6s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0;} 100% { transform: scale(1); opacity: 1;} }
+        @keyframes shake { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(4px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-6px, 0, 0); } 40%, 60% { transform: translate3d(6px, 0, 0); } }
+    </style>
+</head>
+<body class="flex flex-col h-screen text-base">
+
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-[9999]"></canvas>
+
+    <!-- HUD SUPERIOR -->
+    <div id="hud-top" class="hidden justify-between items-center w-full">
+        <div class="flex items-center gap-8">
+            <div class="flex flex-col gap-1.5">
+                <span class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest font-book">Chapters Read</span>
+                <div class="hud-bar-container"><div id="hp-bar" class="hud-bar-fill bg-[var(--accent-gold)]" style="width: 100%;"></div></div>
+            </div>
+            <div class="flex flex-col gap-1.5">
+                <span class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest font-book">Knowledge (XP)</span>
+                <div class="hud-bar-container"><div id="xp-bar" class="hud-bar-fill bg-[var(--accent-green)]" style="width: 0%;"></div></div>
+            </div>
+        </div>
+        <div class="text-right flex items-center gap-6">
+            <button onclick="toggleTeacherHUD()" class="px-4 py-2 bg-[var(--bg-panel)] border border-[var(--border-soft)] rounded text-xs font-typewriter text-[var(--accent-gold)] hover:bg-[var(--accent-gold)] hover:text-black transition shadow-sm"><i class="fas fa-crown mr-2"></i>Director HUD</button>
+            <button onclick="toggleFullscreen()" class="text-slate-400 hover:text-[var(--accent-gold)] transition-colors" title="Fullscreen"><i class="fas fa-expand text-xl"></i></button>
+        </div>
+    </div>
+
+    <!-- PAINEL PRINCIPAL (CAPA - KIWIFY THUMBNAIL STYLE) -->
+    <main id="dashboard" class="flex flex-col justify-center px-8 md:px-20 h-screen w-full relative z-10 bg-cover bg-center" style="background-image: url('./image_65a7a5.jpg'); background-color: #1a1c18;">
+        <!-- Overlay escuro para destacar o texto -->
+        <div class="absolute inset-0 bg-gradient-to-r from-[#0a0c08] via-[#0a0c08]/90 to-transparent"></div>
+        
+        <div class="relative z-20 max-w-4xl">
+            <!-- Badges -->
+            <div class="flex gap-4 mb-6">
+                <span class="bg-[var(--accent-gold)] text-black px-4 py-1.5 font-bold text-xs tracking-widest rounded-sm uppercase font-typewriter shadow-md">A2 Level</span>
+                <span class="bg-black/60 border border-[var(--accent-gold)] text-[var(--accent-gold)] px-4 py-1.5 font-bold text-xs tracking-widest rounded-sm uppercase font-typewriter backdrop-blur-sm">Masterclass</span>
+            </div>
+            
+            <h1 class="text-6xl md:text-8xl font-black text-white leading-tight font-book uppercase mb-6 drop-shadow-2xl" style="text-shadow: 0 10px 30px rgba(0,0,0,0.9);">
+                The Library <br><span class="text-[var(--accent-gold)]">Chronicles</span>
+            </h1>
+            
+            <p class="text-2xl text-slate-300 font-light max-w-2xl leading-relaxed mb-12 drop-shadow-lg">
+                Enter the library. Meet the readers. Learn to express your opinions and describe book plots using <strong class="text-[var(--accent-gold)] font-bold">"It is about..."</strong>.
+            </p>
+            
+            <button onclick="startMission()" class="btn-gold text-xl px-12 py-5 shadow-[0_10px_40px_rgba(212,175,55,0.4)]">
+                Open The Book <i class="fas fa-book-open ml-3"></i>
+            </button>
+        </div>
+    </main>
+
+    <!-- ARENA DE CONTEÚDO DA LIÇÃO -->
+    <main id="mission-arena" class="hidden flex-grow flex-col relative mt-[70px]">
+        <div id="mission-content" class="flex-grow overflow-y-auto px-6 py-12 flex flex-col items-center w-full relative z-20"></div>
+    </main>
+
+    <!-- CONSOLA DE NAVEGAÇÃO -->
+    <footer id="nav-console" class="hidden flex justify-between items-center w-full">
+        <div class="flex items-center w-1/4">
+            <button onclick="goHome()" class="text-slate-400 hover:text-[var(--accent-red)] transition-colors p-3 rounded-full hover:bg-white/5" title="Close Book"><i class="fas fa-power-off text-2xl"></i></button>
+        </div>
+        <div class="flex items-center gap-12 justify-center w-1/2">
+            <button onclick="prevStep()" class="text-slate-400 hover:text-white transition-colors p-2"><i class="fas fa-chevron-left text-2xl"></i></button>
+            <div class="bg-black/50 px-8 py-3 rounded-full border border-[var(--border-soft)] shadow-inner">
+                <span id="console-counter" class="text-xs font-bold text-[var(--accent-gold)] tracking-[0.3em] uppercase font-typewriter">PAGE 01/26</span>
+            </div>
+            <button onclick="nextStep()" class="text-slate-400 hover:text-white transition-colors p-2"><i class="fas fa-chevron-right text-2xl"></i></button>
+        </div>
+        <div class="flex items-center justify-end w-1/4">
+            <button onclick="toggleWhiteboard()" class="text-slate-400 hover:text-white transition-colors p-3 rounded-full hover:bg-white/5" title="The Blackboard"><i class="fas fa-chalkboard text-2xl"></i></button>
+        </div>
+    </footer>
+
+    <!-- DRAWERS: BLACKBOARD & TEACHER HUD -->
+    <aside id="whiteboard" class="fixed right-0 top-0 h-screen w-[400px] drawer flex flex-col pt-[70px]">
+        <div class="p-6 border-b border-[var(--border-soft)] flex justify-between items-center bg-black/40">
+            <h2 class="font-book text-xl font-bold text-white uppercase tracking-widest"><i class="fas fa-chalkboard mr-3 text-[var(--accent-gold)]"></i>The Blackboard</h2>
+            <button onclick="toggleWhiteboard()"><i class="fas fa-times text-xl text-gray-400 hover:text-white"></i></button>
+        </div>
+        <div class="flex-grow bg-[#1a1c18] p-6 relative">
+            <textarea id="wb-text" class="w-full h-full bg-transparent text-[var(--text-main)] resize-none focus:outline-none font-typewriter text-lg leading-loose" placeholder="> Take your notes here..."></textarea>
+        </div>
+    </aside>
+
+    <aside id="teacher-hud" class="fixed right-0 top-0 h-screen w-[350px] drawer flex flex-col pt-[70px]">
+        <div class="p-6 border-b border-[var(--border-soft)] flex justify-between items-center bg-black/40">
+            <h2 class="font-book text-xl font-bold text-[var(--accent-gold)] uppercase tracking-widest"><i class="fas fa-crown mr-3"></i>Director HUD</h2>
+            <button onclick="toggleTeacherHUD()"><i class="fas fa-times text-xl text-gray-400 hover:text-white"></i></button>
+        </div>
+        <div class="flex-grow overflow-y-auto p-6 space-y-8 bg-black/20">
+            <div class="bg-black/40 p-6 rounded border border-[var(--border-soft)] shadow-inner">
+                <p class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-3 font-typewriter">Lesson Goal</p>
+                <p class="text-sm text-gray-300 leading-relaxed font-ui font-light">Level A2. Discuss reading preferences. Master adjectives for books and the structure "It is about..." to describe plots.</p>
+            </div>
+            <div>
+                <p class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4 font-typewriter">Deploy Praise</p>
+                <div class="space-y-4">
+                    <button onclick="triggerPraise('EXCELLENT GRAMMAR', 'Perfect Structure.')" class="w-full py-4 bg-[rgba(212,175,55,0.1)] text-[var(--accent-gold)] border border-[var(--accent-gold)] rounded font-bold text-xs hover:bg-[var(--accent-gold)] hover:text-black transition-all uppercase tracking-widest font-book">SEND: GOLD</button>
+                    <button onclick="triggerPraise('BRILLIANT OPINION', 'Great Speaking.')" class="w-full py-4 bg-transparent text-white border border-white rounded font-bold text-xs hover:bg-white hover:text-black transition-all uppercase tracking-widest font-book">SEND: WHITE</button>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Overlay de Elogio -->
+    <div id="praise-overlay" class="fixed inset-0 z-[6000] flex items-center justify-center bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-500 p-4">
+        <div id="praise-card" class="text-center transform scale-50 transition-transform duration-700 flex flex-col items-center">
+            <div class="w-24 h-24 rounded-full bg-black/50 flex items-center justify-center border-2 border-[var(--accent-gold)] mb-6 shadow-[0_0_40px_rgba(212,175,55,0.4)]">
+                <i class="fas fa-star text-5xl text-[var(--accent-gold)]"></i>
+            </div>
+            <h2 id="praise-main" class="font-book text-5xl md:text-7xl font-black tracking-widest uppercase mb-4 text-white drop-shadow-lg"></h2>
+            <p id="praise-sub" class="text-sm font-bold text-[var(--accent-gold)] tracking-[0.3em] uppercase font-typewriter"></p>
+        </div>
+    </div>
+
+    <!-- SCRIPT DO MOTOR PRINCIPAL -->
+    <script>
+        // Centralized shuffle
+        function shuffleArray(array) {
+            let curId = array.length; 
+            while (0 !== curId) { 
+                let randId = Math.floor(Math.random() * curId); 
+                curId -= 1; 
+                let tmp = array[curId]; 
+                array[curId] = array[randId]; 
+                array[randId] = tmp; 
+            } 
+            return array;
+        }
+
+        let state = { hp: 100, xp: 0, current: 0 };
+        const esc = (s) => s ? s.replace(/'/g, "\\'").replace(/"/g, "&quot;") : "";
+
+        // --- TEMPLATES A2 (THE LIBRARY CHRONICLES) ---
+        function step(title, html) { return { title, html }; }
+
+        const bGuide = (title, subtitle, points) => step(title, `
+            <div class="max-w-3xl mx-auto space-y-8 animate-in fade-in py-10 w-full">
+                <div class="library-panel p-14 text-center">
+                    <h2 class="font-book text-4xl md:text-6xl font-bold text-[var(--accent-gold)] mb-6 drop-shadow-md">${title}</h2>
+                    <p class="text-xl text-[var(--text-muted)] mb-12 font-light tracking-wide">${subtitle}</p>
+                    <div class="space-y-6 text-left max-w-lg mx-auto bg-black/40 p-10 rounded-xl border border-[var(--border-soft)] shadow-inner">
+                        ${points.map(p => `<p class="text-xl text-white font-light flex items-start gap-4"><i class="fas fa-bookmark text-[var(--accent-red)] text-lg mt-1 drop-shadow-[0_0_5px_rgba(139,0,0,0.8)]"></i> <span class="leading-relaxed">${p}</span></p>`).join('')}
+                    </div>
+                </div>
+            </div>
+        `);
+
+        const bVisualChoice = (title, instruction, opt1, img1, opt2, img2, starter) => step(title, `
+            <div class="max-w-5xl mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center animate-in fade-in w-full">
+                <p class="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mb-4 font-typewriter">The Prologue</p>
+                <h2 class="font-book text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-md">${title}</h2>
+                <p class="text-xl text-slate-300 font-light mb-12">${instruction}</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-4xl" id="choice-group">
+                    <div class="choice-card" onclick="selectChoice(this)">
+                        <img src="${img1}" alt="${opt1}" onerror="this.style.backgroundColor='#3e2723'">
+                        <div class="choice-content"><h3 class="text-3xl font-bold text-[var(--accent-gold)] font-book drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">${opt1}</h3></div>
+                    </div>
+                    <div class="choice-card" onclick="selectChoice(this)">
+                        <img src="${img2}" alt="${opt2}" onerror="this.style.backgroundColor='#3e2723'">
+                        <div class="choice-content"><h3 class="text-3xl font-bold text-[var(--accent-gold)] font-book drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">${opt2}</h3></div>
+                    </div>
+                </div>
+
+                <div class="w-full max-w-4xl p-6 mt-10 bg-black/40 border border-[var(--border-soft)] rounded-xl text-center shadow-lg">
+                    <p class="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest font-typewriter mb-3">Speak Out Loud</p>
+                    <p class="text-2xl text-white font-light italic font-book">"${starter} . . ."</p>
+                </div>
+
+                <div id="choice-fb" class="hidden mt-8 text-xl text-[var(--accent-green)] font-medium animate-in fade-in"><i class="fas fa-check-circle mr-2"></i> Excellent choice. Let's turn the page.</div>
+            </div>
+        `);
+
+        const bVisualMatch = (id, title, instruction, items, followUpQuestion) => {
+            let words = shuffleArray([...items]).map(w => `
+                <div class="vocab-pill" draggable="true" ondragstart="dragVocabMatch(event, this)" ondragend="this.classList.remove('dragging')" data-word="${esc(w.word)}">
+                    ${w.word}
+                </div>
+            `).join('');
+
+            let dropzones = items.map((w) => `
+                <div class="library-panel p-5 flex flex-col items-center">
+                    <div class="match-img-box" style="background-image: url('${w.img}');" onerror="this.style.backgroundColor='#1a1c18'"></div>
+                    <div class="match-dropzone" data-expected="${esc(w.word)}" ondrop="dropVocabMatch(event, this, '${id}')" ondragover="allowDropVocabMatch(event)" ondragleave="leaveDropVocabMatch(event)">
+                        Drop Genre Here
+                    </div>
+                </div>
+            `).join('');
+
+            return step(title, `
+                <div class="max-w-5xl mx-auto flex flex-col items-center py-6 animate-in fade-in w-full" id="vmatch-container-${id}">
+                    <p class="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mb-4 font-typewriter">The Index</p>
+                    <h2 class="font-book text-4xl md:text-5xl font-bold text-white mb-4 text-center drop-shadow-md">${title}</h2>
+                    <p class="text-slate-300 text-xl font-light mb-8 text-center">${instruction}</p>
+                    
+                    <div class="w-full flex justify-center flex-wrap gap-5 mb-10 bg-black/30 p-8 rounded-xl border border-[var(--border-soft)] shadow-inner" id="vmatch-bank-${id}">
+                        ${words}
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full" id="vmatch-grid-${id}">
+                        ${dropzones}
+                    </div>
+                    
+                    <div id="vmatch-fb-${id}" class="hidden w-full max-w-4xl p-6 mt-8 bg-black/40 border border-[var(--border-soft)] rounded-xl text-center shadow-lg animate-in fade-in">
+                        <p class="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest font-typewriter mb-3">Speak Out Loud</p>
+                        <p class="text-2xl text-white font-light italic font-book">"${followUpQuestion}"</p>
+                    </div>
+                </div>
+            `);
+        };
+
+        const bVideo = (title, instruction, videoId, start, end) => {
+            const timeParams = (start !== undefined && end !== undefined) ? `&start=${start}&end=${end}` : '';
+            return step(title, `
+            <div class="max-w-5xl mx-auto flex flex-col items-center justify-center min-h-[70vh] py-10 animate-in fade-in w-full">
+                <p class="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mb-4 font-typewriter flex items-center gap-2"><i class="fas fa-film text-[var(--accent-red)]"></i> VIDEO ARCHIVE</p>
+                <h2 class="font-book text-4xl md:text-6xl font-black text-white mb-8 text-center drop-shadow-lg">${title}</h2>
+                <p class="text-xl text-slate-300 font-light mb-12 text-center max-w-2xl">${instruction}</p>
+                
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1${timeParams}" allowfullscreen></iframe>
+                </div>
+            </div>
+        `);
+        };
+
+        const bMultipleChoice = (id, title, instruction, optA, optB, correctOpt) => step(title, `
+            <div class="max-w-4xl mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center space-y-8 animate-in fade-in w-full">
+                <p class="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mb-4 font-typewriter"><i class="fas fa-question-circle mr-2"></i> Comprehension Check</p>
+                <h2 class="font-book text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-md">${title}</h2>
+                <p class="text-xl font-light text-slate-300 mb-10">${instruction}</p>
+                
+                <div class="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-8" id="mc-group-${id}">
+                    <button class="mc-btn p-8 rounded-xl text-3xl font-bold hover:text-white transition-all cursor-pointer shadow-inner" onclick="selectMC(this, '${id}', '${esc(optA)}', '${esc(correctOpt)}')">${optA}</button>
+                    <button class="mc-btn p-8 rounded-xl text-3xl font-bold hover:text-white transition-all cursor-pointer shadow-inner" onclick="selectMC(this, '${id}', '${esc(optB)}', '${esc(correctOpt)}')">${optB}</button>
+                </div>
+                
+                <div id="mc-fb-${id}" class="hidden mt-12 text-[var(--accent-green)] font-bold text-xl bg-[rgba(46,139,87,0.1)] border border-[var(--accent-green)] px-10 py-4 rounded-lg font-book"><i class="fas fa-check-circle mr-2"></i> Correct Answer!</div>
+            </div>
+        `);
+
+        const bFlipCards = (title, instruction, cards, followUpQuestion) => step(title, `
+            <div class="max-w-5xl mx-auto flex flex-col items-center py-10 animate-in fade-in w-full">
+                <p class="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mb-4 font-typewriter">The Glossary</p>
+                <h2 class="font-book text-4xl md:text-5xl font-bold text-white mb-6 text-center drop-shadow-md">${title}</h2>
+                <p class="text-slate-300 text-xl font-light mb-14 text-center">${instruction}</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl mb-10">
+                    ${cards.map(card => `
+                        <div class="flip-card w-full" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-inner">
+                                <div class="flip-front">
+                                    <div class="w-20 h-20 rounded-full bg-[var(--bg-wood)] mb-6 overflow-hidden border-2 border-[var(--accent-gold)] shadow-[0_0_15px_rgba(212,175,55,0.3)] flex items-center justify-center"><i class="fas ${card.icon} text-4xl text-[var(--accent-gold)]"></i></div>
+                                    <p class="font-book text-[var(--text-main)] text-3xl font-bold mb-2">${card.title}</p>
+                                    <p class="text-xs text-[var(--accent-red)] mt-4 font-typewriter uppercase tracking-widest">Click to Read</p>
+                                </div>
+                                <div class="flip-back flex justify-center items-center">
+                                    <div class="w-full">
+                                        <p class="text-3xl font-book font-bold text-[#1a1c18] mb-4 border-b border-[var(--accent-gold)] pb-2 inline-block">${card.name}</p>
+                                        <p class="text-lg text-[#1a1c18] font-medium leading-relaxed px-4 font-outfit">"${card.desc}"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="w-full max-w-4xl p-6 bg-black/40 border border-[var(--border-soft)] rounded-xl text-center shadow-lg">
+                    <p class="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest font-typewriter mb-3">Speak Out Loud</p>
+                    <p class="text-2xl text-white font-light italic font-book">"${followUpQuestion}"</p>
+                </div>
+            </div>
+        `);
+
+        const bGrammar = (title, subtitle, rule, examples) => step(title, `
+            <div class="max-w-4xl mx-auto space-y-10 animate-in fade-in py-12 w-full">
+                <div class="text-center space-y-4 mb-14">
+                    <p class="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mb-4 font-typewriter bg-[rgba(212,175,55,0.1)] inline-block px-4 py-1.5 rounded border border-[rgba(212,175,55,0.3)]">Grammar Rules</p>
+                    <h2 class="font-book text-5xl md:text-6xl font-black text-white drop-shadow-md">${title}</h2>
+                    <p class="text-xl text-slate-300 font-light">${subtitle}</p>
+                </div>
+                
+                <div class="library-panel p-12 text-center border-t-4 border-[var(--accent-gold)]">
+                    <p class="font-outfit text-3xl text-white font-light tracking-wide">${rule}</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+                    ${examples.map(ex => `
+                        <div class="bg-black/40 border border-[var(--border-soft)] p-10 rounded-xl text-center shadow-lg">
+                            <p class="text-2xl font-light text-white font-book leading-loose">"${ex.replace(/\[(.*?)\]/g, `<span class="text-[var(--accent-gold)] font-bold border-b border-[var(--accent-gold)] pb-1">$1</span>`)}"</p>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `);
+
+        const bBucketSort = (id, title, instruction, items, buckets) => {
+            let pills = shuffleArray([...items]).map(item => `
+                <div class="sort-pill" draggable="true" ondragstart="dragBucket(event, this)" data-target="${item.target}">
+                    ${item.word}
+                </div>
+            `).join('');
+
+            let bucketHtml = buckets.map(b => `
+                <div class="bucket-zone w-full" data-bucket="${b}" ondrop="dropBucket(event, this, '${id}', ${items.length})" ondragover="allowDropBucket(event)" ondragleave="leaveDropBucket(event)">
+                    <h3>${b}</h3>
+                    <div class="bucket-items"></div>
+                </div>
+            `).join('');
+
+            return step(title, `
+                <div class="max-w-5xl mx-auto flex flex-col items-center py-10 animate-in fade-in w-full">
+                    <p class="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mb-4 font-typewriter">The Bookshelf</p>
+                    <h2 class="font-book text-4xl md:text-5xl font-bold text-white mb-6 text-center drop-shadow-md">${title}</h2>
+                    <p class="text-slate-300 text-xl font-light mb-12 text-center">${instruction}</p>
+                    
+                    <div class="w-full flex justify-center flex-wrap gap-4 mb-14 bg-black/40 p-8 rounded-xl border border-[var(--border-soft)] shadow-inner" id="bucket-bank-${id}">
+                        ${pills}
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-${buckets.length} gap-10 w-full max-w-4xl" id="bucket-grid-${id}">
+                        ${bucketHtml}
+                    </div>
+                    
+                    <div id="bucket-fb-${id}" class="hidden mt-12 text-[var(--accent-gold)] font-bold text-xl bg-[rgba(212,175,55,0.1)] border border-[var(--accent-gold)] px-10 py-4 rounded-lg font-book"><i class="fas fa-book mr-2"></i> All books organized!</div>
+                </div>
+            `);
+        };
+
+        const bTuner = (id, title, instruction, wrong, right, rule) => step(title, `
+            <div class="max-w-4xl mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center space-y-10 animate-in fade-in w-full">
+                <p class="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mb-2 font-typewriter"><i class="fas fa-highlighter mr-2"></i> The Editor</p>
+                <h2 class="font-book text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">${title}</h2>
+                <p class="text-xl font-light text-slate-300">${instruction}</p>
+                
+                <div class="w-full max-w-3xl library-panel flex flex-col items-center py-16 mt-8">
+                    <div class="flex items-center gap-8 mb-14 w-full justify-center">
+                        <span class="font-bold text-slate-500 tracking-widest text-sm w-24 text-right uppercase font-typewriter" id="mode-aff-${id}">Draft</span>
+                        <div class="tuner-track" id="tuner-track-${id}" onclick="toggleTuner('${id}', '${esc(wrong)}', '${esc(right)}', '${esc(rule)}')">
+                            <div class="tuner-knob"></div>
+                        </div>
+                        <span class="font-bold text-slate-500 tracking-widest text-sm w-24 text-left uppercase font-typewriter" id="mode-alt-${id}">Edited</span>
+                    </div>
+
+                    <div class="bg-black/50 w-full max-w-xl p-12 flex items-center justify-center min-h-[160px] rounded-xl border border-[var(--border-soft)] shadow-inner">
+                        <p id="tuner-text-${id}" class="text-4xl font-bold font-book text-[var(--accent-red)] transition-opacity drop-shadow-md">"${wrong.replace(/\[(.*?)\]/g, `<span class="underline decoration-wavy">$1</span>`)}"</p>
+                    </div>
+                    
+                    <div id="tuner-fb-${id}" class="hidden mt-10 font-light text-xl text-[var(--accent-green)] bg-[rgba(46,139,87,0.1)] px-8 py-3 rounded-lg border border-[var(--accent-green)]">
+                        <i class="fas fa-check mr-2"></i> ${rule}
+                    </div>
+                </div>
+            </div>
+        `);
+
+        const bLogicGate = (title, instruction, pairs) => {
+            let lefts = pairs.map((p, i) => ({text: p.left, id: i, type: 'L'}));
+            let rights = pairs.map((p, i) => ({text: p.right, id: i, type: 'R'}));
+            lefts = shuffleArray(lefts); rights = shuffleArray(rights);
+
+            const buildNodes = (arr) => arr.map(item => `
+                <div class="logic-node" data-id="${item.id}" data-type="${item.type}" onclick="handleMatch(this)">
+                    ${item.text}
+                </div>
+            `).join('');
+
+            return step(title, `
+                <div class="max-w-5xl mx-auto w-full flex flex-col items-center py-10 animate-in fade-in">
+                    <p class="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mb-6 font-typewriter"><i class="fas fa-link mr-2"></i> Connect</p>
+                    <h2 class="font-book text-4xl md:text-5xl font-bold text-white mb-6 text-center drop-shadow-md">${title}</h2>
+                    <p class="text-slate-300 font-light text-xl mb-14 text-center">${instruction}</p>
+                    
+                    <div class="w-full max-w-4xl library-panel p-14" id="match-board">
+                        <div class="grid grid-cols-2 gap-12 w-full">
+                            <div class="flex flex-col gap-6" id="match-left">${buildNodes(lefts)}</div>
+                            <div class="flex flex-col gap-6" id="match-right">${buildNodes(rights)}</div>
+                        </div>
+                    </div>
+                    <div id="match-hub" class="hidden mt-12 text-[var(--accent-green)] font-bold text-xl bg-[rgba(46,139,87,0.1)] border border-[var(--accent-green)] px-10 py-4 rounded-lg font-book"><i class="fas fa-check-circle mr-2"></i> Matches completed!</div>
+                </div>
+            `);
+        }
+
+        const bRedacted = (id, title, instruction, text, expected) => {
+            let expCopy = [...expected]; 
+            let htmlText = text.replace(/\[(.*?)\]/g, () => {
+                const ans = expCopy.shift();
+                return `<input type="text" class="gap-input" data-ans="${esc(ans)}" oninput="checkGap(this)" autocomplete="off">`;
+            });
+
+            return step(title, `
+                <div class="max-w-4xl mx-auto w-full flex flex-col items-center py-12 animate-in fade-in">
+                    <p class="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mb-4 font-typewriter"><i class="fas fa-keyboard mr-2"></i> The Typewriter</p>
+                    <h2 class="font-book text-4xl md:text-5xl font-bold text-white mb-8 text-center drop-shadow-md">${title}</h2>
+                    <p class="text-slate-300 font-light text-xl mb-12 text-center">${instruction}</p>
+                    
+                    <div class="w-full library-panel p-20 text-3xl leading-loose font-typewriter font-light text-center relative shadow-[inset_0_0_50px_rgba(0,0,0,0.8)]" id="gap-container-${id}">
+                        ${htmlText}
+                        <div class="absolute bottom-4 right-6 text-sm font-outfit text-[var(--text-muted)] opacity-50">Type to fill gaps</div>
+                    </div>
+                    <div id="gap-fb-${id}" class="hidden mt-12 text-[var(--accent-green)] font-bold text-xl bg-[rgba(46,139,87,0.1)] border border-[var(--accent-green)] px-10 py-4 rounded-lg font-book"><i class="fas fa-print mr-2"></i> Review completed!</div>
+                </div>
+            `);
+        }
+
+        const bWordBuilder = (id, title, instruction, expectedArr) => {
+            const expectedStr = JSON.stringify(expectedArr).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            let wordBtns = shuffleArray([...expectedArr]).map(w => `<span class="build-pill" onclick="moveTypeWord(this, '${esc(w)}', '${id}')">${w}</span>`).join('');
+            return step(title, `
+                <div class="max-w-5xl mx-auto w-full flex flex-col items-center py-10 animate-in fade-in" data-expected="${expectedStr}" id="wb-data-${id}">
+                    <p class="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mb-4 font-typewriter"><i class="fas fa-pen-nib mr-2"></i> Sentence Builder</p>
+                    <h2 class="font-book text-4xl md:text-5xl font-bold text-white mb-6 text-center drop-shadow-md">${title}</h2>
+                    <p class="text-slate-300 font-light text-xl mb-12 text-center">${instruction}</p>
+                    
+                    <div class="w-full library-panel text-center pb-12">
+                        <div id="wb-dropzone-${id}" class="min-h-[160px] bg-black/40 border-b border-[var(--border-soft)] flex flex-wrap gap-4 items-center justify-center p-10 mb-12 rounded-t-xl transition-all shadow-inner"></div>
+                        <div class="flex justify-center flex-wrap gap-5 w-full px-10" id="wb-bank-${id}">
+                            ${wordBtns}
+                        </div>
+                        <div class="mt-12 flex justify-center items-center px-10">
+                            <button onclick="resetWb('${id}')" class="text-sm font-bold text-slate-400 hover:text-[var(--accent-gold)] uppercase tracking-widest transition font-outfit bg-white/5 border border-white/10 px-8 py-3 rounded-full"><i class="fas fa-rotate-left mr-2"></i> Reset Sentence</button>
+                        </div>
+                    </div>
+                    <div id="wb-fb-${id}" class="hidden mt-12 text-[var(--accent-green)] font-bold text-xl bg-[rgba(46,139,87,0.1)] border border-[var(--accent-green)] px-10 py-4 rounded-lg font-book"><i class="fas fa-check mr-2"></i> Sentence constructed!</div>
+                </div>
+            `);
+        }
+
+        const bRoleplay = (title, instruction, prompts) => step(title, `
+            <div class="max-w-5xl mx-auto flex flex-col items-center py-12 animate-in fade-in w-full">
+                <p class="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mb-4 font-typewriter"><i class="fas fa-microphone-alt mr-2"></i> Book Club</p>
+                <h2 class="font-book text-4xl md:text-5xl font-bold text-white mb-6 text-center drop-shadow-md">${title}</h2>
+                <p class="text-slate-300 text-xl font-light mb-14 text-center max-w-3xl">${instruction}</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-4xl">
+                    ${prompts.map((p, idx) => `
+                        <div class="flip-card w-full" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-inner">
+                                <div class="flip-front">
+                                    <i class="fas fa-quote-right text-6xl text-[var(--accent-gold)] mb-8 opacity-80"></i>
+                                    <p class="font-book text-white text-3xl font-bold mb-3">Quote ${idx + 1}</p>
+                                    <p class="text-xs text-[var(--accent-red)] mt-2 font-typewriter uppercase tracking-widest">Click to Read</p>
+                                </div>
+                                <div class="flip-back flex justify-center items-center p-8">
+                                    <p class="text-2xl font-book font-light text-[#1a1c18] leading-relaxed italic">"${p}"</p>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `);
+
+        const bDebate = (title, statement, starter) => step(title, `
+            <div class="max-w-5xl mx-auto flex flex-col items-center py-12 animate-in fade-in w-full">
+                <p class="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mb-4 font-typewriter"><i class="fas fa-comments mr-2"></i> Opinion</p>
+                <h2 class="font-book text-4xl md:text-5xl font-bold text-white mb-6 text-center drop-shadow-md">${title}</h2>
+                <p class="text-slate-300 text-xl font-light mb-12 text-center max-w-2xl">Discuss with your teacher.</p>
+                
+                <div class="w-full max-w-3xl library-panel p-16 text-center">
+                    <p class="text-5xl font-book text-white font-bold mb-14 leading-tight">"${statement}"</p>
+                    <div class="flex gap-8 justify-center mb-10">
+                        <button class="px-10 py-4 bg-transparent border-2 border-[var(--accent-green)] text-[var(--accent-green)] rounded-lg font-bold hover:bg-[var(--accent-green)] hover:text-black transition uppercase tracking-widest font-outfit" onclick="shootConfetti()">I AGREE</button>
+                        <button class="px-10 py-4 bg-transparent border-2 border-[var(--accent-red)] text-[var(--accent-red)] rounded-lg font-bold hover:bg-[var(--accent-red)] hover:text-white transition uppercase tracking-widest font-outfit" onclick="shootConfetti()">I DISAGREE</button>
+                    </div>
+                    <div class="bg-black/50 p-6 rounded-xl border border-[var(--border-soft)] inline-block">
+                        <p class="text-sm text-[var(--accent-gold)] font-bold uppercase tracking-widest mb-2 font-typewriter">Speak Out Loud</p>
+                        <p class="text-2xl text-white font-light italic font-book">"${starter} . . ."</p>
+                    </div>
+                </div>
+            </div>
+        `);
+
+        // NEW INTERACTIVE READING (Clickable Words + Genre Quiz)
+        const bInteractiveReading = (id, title, instruction, textHTML, question, opt1, opt2, opt3, correct) => step(title, `
+            <div class="max-w-6xl mx-auto flex flex-col items-center py-8 animate-in fade-in w-full">
+                <p class="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mb-4 font-typewriter"><i class="fas fa-book-open mr-2"></i> The Secret Manuscript</p>
+                <h2 class="font-book text-4xl md:text-5xl font-bold text-white mb-6 text-center drop-shadow-md">${title}</h2>
+                <p class="text-xl font-light text-slate-300 mb-8 text-center">${instruction}</p>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
+                    <!-- Book Page (Left) -->
+                    <div class="lg:col-span-8 magic-page p-12 md:p-16 text-2xl md:text-3xl leading-relaxed font-book text-[var(--ink-main)] relative shadow-2xl flex items-center">
+                        <p class="first-letter:text-7xl first-letter:font-bold first-letter:text-[var(--accent-red)] first-letter:mr-2 first-letter:float-left">
+                            ${textHTML}
+                        </p>
+                    </div>
+                    <!-- Controls (Right) -->
+                    <div class="lg:col-span-4 flex flex-col gap-6">
+                        <!-- Dictionary -->
+                        <div class="library-panel p-8 text-center flex-grow flex flex-col justify-center border-t-4 border-[var(--accent-gold)]">
+                            <i class="fas fa-book-medical text-4xl text-[var(--accent-gold)] mb-4 opacity-50"></i>
+                            <p class="text-xs text-[var(--text-muted)] font-typewriter uppercase tracking-widest mb-4">Magic Dictionary</p>
+                            <div id="dict-def-${id}">
+                                <p class="text-lg text-white font-light italic">Click on a <span class="text-[var(--accent-red)] font-bold">highlighted</span> word to reveal its meaning.</p>
+                            </div>
+                        </div>
+                        <!-- Genre Quiz -->
+                        <div class="library-panel p-8 text-center" id="read-quiz-${id}">
+                            <p class="text-lg font-bold text-white mb-6 font-book">${question}</p>
+                            <div class="flex flex-col gap-3">
+                                <button class="mc-btn py-3 px-4 rounded text-lg font-bold transition-all" onclick="selectReadGenre(this, '${id}', '${opt1}', '${correct}')">${opt1}</button>
+                                <button class="mc-btn py-3 px-4 rounded text-lg font-bold transition-all" onclick="selectReadGenre(this, '${id}', '${opt2}', '${correct}')">${opt2}</button>
+                                <button class="mc-btn py-3 px-4 rounded text-lg font-bold transition-all" onclick="selectReadGenre(this, '${id}', '${opt3}', '${correct}')">${opt3}</button>
+                            </div>
+                            <div id="read-fb-${id}" class="hidden mt-6 text-[var(--accent-green)] font-bold text-lg font-book"><i class="fas fa-check-circle mr-2"></i> Correct Genre!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `);
+
+        const bProfileBuilder = () => step("Reading Profile", `
+            <div class="max-w-4xl mx-auto w-full flex flex-col items-center py-12 animate-in fade-in">
+                <p class="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mb-4 font-typewriter">Final Project</p>
+                <h2 class="font-book text-4xl md:text-5xl font-bold text-white mb-6 text-center drop-shadow-md">Create Your Library Card</h2>
+                <p class="text-slate-300 font-light text-xl mb-12 text-center">Fill the form to generate your reader profile, then present it.</p>
+                
+                <div class="w-full max-w-md library-panel p-12" id="profile-form">
+                    <input type="text" id="p-name" class="profile-input" placeholder="Your Name">
+                    <input type="text" id="p-genre" class="profile-input" placeholder="Favorite Genre (e.g. Sci-Fi)">
+                    <input type="text" id="p-book" class="profile-input" placeholder="Favorite Book">
+                    <button onclick="generateProfile()" class="btn-gold w-full mt-8">Create Library Card</button>
+                </div>
+
+                <div id="profile-result" class="hidden w-full max-w-lg mt-8">
+                    <div class="magic-card-res">
+                        <div class="flex items-center gap-8 mb-8 border-b border-[var(--bg-wood)] pb-8">
+                            <div class="w-24 h-24 bg-[var(--bg-wood)] rounded-full border-2 border-[var(--accent-gold)] flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.3)]"><i class="fas fa-book-reader text-4xl text-[var(--accent-cream)]"></i></div>
+                            <div>
+                                <h3 class="text-4xl font-book font-bold text-[#1a1c18] mb-2" id="res-name">Name</h3>
+                                <p class="text-[#3e2723] font-outfit text-sm tracking-widest uppercase opacity-80 font-bold">Registered Reader</p>
+                            </div>
+                        </div>
+                        <div class="space-y-6 text-[#1a1c18]">
+                            <p class="text-2xl font-medium font-book">Hello, I am <span class="font-bold border-b-2 border-[#1a1c18]" id="res-name-2">_</span>.</p>
+                            <p class="text-2xl font-medium font-book">My favorite genre is <span class="font-bold border-b-2 border-[#1a1c18]" id="res-genre">_</span>.</p>
+                            <p class="text-2xl font-medium font-book">My favorite book has to be <span class="font-bold border-b-2 border-[#1a1c18]" id="res-book">_</span>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `);
+
+        const bWrap = () => step("Mission Complete", `
+            <div class="text-center max-w-3xl mx-auto flex flex-col items-center justify-center min-h-[70vh] animate-in fade-in">
+                <div class="w-40 h-40 bg-black/50 rounded-full border-2 border-[var(--accent-gold)] flex items-center justify-center mb-10 shadow-[0_0_60px_rgba(212,175,55,0.3)]">
+                    <i class="fas fa-book text-6xl text-[var(--accent-gold)]"></i>
+                </div>
+                <h1 class="font-book text-6xl md:text-8xl font-black text-white tracking-tighter mb-8 uppercase drop-shadow-lg">Story <br><span class="text-[var(--accent-gold)]">Finished</span></h1>
+                <p class="text-2xl text-slate-300 mb-14 font-light max-w-xl mx-auto leading-relaxed">You finished The Library Chronicles. You learned to talk about book genres and describe plots using <strong class="text-[var(--accent-gold)] font-bold">"It is about"</strong>.</p>
+                <button onclick="goHome()" class="btn-gold text-xl">
+                    Leave the Library
+                </button>
+            </div>
+        `);
+
+        // --- LESSON DATA (Exactly 26 Pages for A2 flow with new Reading additions) ---
+        const lessonData = [
+            /* 01 */ bGuide("The Library Chronicles", "A Bookish Masterclass", ["Level: A2 Pre-Intermediate.", "Topic: Reading Preferences.", "Grammar: Describing Plots (It is about...).", "Vocabulary: Book Genres & Adjectives."]),
+            /* 02 */ bVisualChoice("How do you prefer to read?", "Click the picture.", "Physical Book", "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=800", "E-Book", "https://images.unsplash.com/photo-1588666309990-d68f08e3d4a6?q=80&w=800", "I prefer..."),
+            /* 03 */ bVisualMatch("vm1", "Book Genres", "Drag the genre to the correct image.", [
+                {word: "Sci-Fi", img: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600"},
+                {word: "Romance", img: "https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?q=80&w=600"},
+                {word: "Biography", img: "https://www.collinsdictionary.com/images/full/biography_176902637.jpg"},
+                {word: "Fantasy", img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600"}
+            ], "Which of these genres is your favorite to read?"),
+            /* 04 */ bVideo("What is your favorite book?", "Watch the video. Listen to the teens' opinions.", "Ii3DMsA9DAw", 0, 64),
+            /* 05 */ bMultipleChoice("mc1", "Comprehension Check", "Which book is about things blowing up?", "The Hunger Games", "Quotable Einstein", "The Hunger Games"),
+            /* 06 */ bFlipCards("Adjectives for Books", "Click the cards to learn new words.", [
+                {title: "Awesome", name: "Awesome", desc: "Very good, excellent, or amazing.", icon: "fa-star"},
+                {title: "Violent", name: "Violent", desc: "Containing a lot of action where people get hurt.", icon: "fa-bomb"},
+                {title: "Descriptive", name: "Descriptive", desc: "Containing a lot of details about people or places.", icon: "fa-pen-fancy"}
+            ], "Which adjective describes your favorite book?"),
+            /* 07 */ bGrammar("Describing Plots", "Use 'It is about' to explain the story of a book.", "It is about + [noun or gerund]", ["[It is about] Greek mythology.", "[It is about] people dying.", "[It is about] a Hollywood prince."]),
+            /* 08 */ bTuner("tun1", "The Editor", "Click the switch to fix the sentence.", "The book is [about of] a boy.", "The book is [about] a boy.", "Rule: Do not use 'of' after 'about' in this context."),
+            /* 09 */ bBucketSort("bs1", "The Bookshelf", "Sort the books to their genres.", [
+                {word: "Quotable Einstein", target: "BIOGRAPHY"}, {word: "Steve Jobs", target: "BIOGRAPHY"}, 
+                {word: "The Hunger Games", target: "ACTION / SCI-FI"}, {word: "Star Wars", target: "ACTION / SCI-FI"}
+            ], ["BIOGRAPHY", "ACTION / SCI-FI"]),
+            /* 10 */ bRedacted("red1", "The Typewriter", "Type the missing words: 'about', 'awesome'.", "The Hunger Games is an [awesome] book. It is [about] a girl named Katniss.", ["awesome", "about"]),
+            /* 11 */ bVideo("More Favorites", "Watch the second part. What other books do they like?", "Ii3DMsA9DAw", 64, 149),
+            /* 12 */ bMultipleChoice("mc2", "Comprehension Check", "What kind of story is 'Pride and Prejudice'?", "A love story", "An action story", "A love story"),
+            /* 13 */ bFlipCards("More Adjectives", "Click the cards to learn new words.", [
+                {title: "Relatable", name: "Relatable", desc: "Easy to understand and feel connected to.", icon: "fa-user-friends"},
+                {title: "Realistic", name: "Realistic", desc: "Showing things as they are in real life.", icon: "fa-camera"},
+                {title: "Darling", name: "Darling", desc: "Very cute, charming, or lovable.", icon: "fa-heart"}
+            ], "Do you prefer relatable characters or fantasy characters?"),
+            /* 14 */ bLogicGate("Connections", "Match the book to the reason.", [
+                {left: "Pride and Prejudice...", right: "...is a love story."}, {left: "Looking for Alaska...", right: "...is realistic."}, {left: "The Outsiders...", right: "...is relatable."}
+            ]),
+            /* 15 */ bGrammar("Expressing Favorites", "How to say you really love a book.", "My favorite book [has to be]...", ["[My favorite book is] Harry Potter.", "[My favorite book has to be] The Lucky One."]),
+            /* 16 */ bWordBuilder("wb1", "Sentence Builder", "Order the words.", ["My", "favorite", "book", "has", "to", "be", "Harry", "Potter", "."]),
+            /* 17 */ bRedacted("red2", "The Typewriter", "Type the missing words: 'favorite', 'relatable'.", "My [favorite] book is The Outsiders. The story is very [relatable].", ["favorite", "relatable"]),
+            /* 18 */ bRoleplay("Book Club", "Read the opinions to your teacher.", ["My favorite book has to be The Fault in Our Stars. It is very realistic.", "I love The Hunger Games because it is awesome and descriptive."]),
+            /* 19 */ bDebate("Deep Thoughts", "Books are always better than movies.", "I agree because... / I disagree because..."),
+            
+            // --- NEW: INTERACTIVE READINGS ---
+            /* 20 */ bInteractiveReading("r1", "Reading I: City of Neon", "Read the text. Click the red words for the dictionary.", "The year is 3042. The sky is always dark, but the city is full of <span class='reading-clickable' onclick='showDict(this, \"glowing\", \"Shining with a soft light.\", \"dict-def-r1\")'>glowing</span> neon lights. A lone detective looks at the <span class='reading-clickable' onclick='showDict(this, \"hologram\", \"A 3D image made of light.\", \"dict-def-r1\")'>hologram</span>. He must find the stolen <span class='reading-clickable' onclick='showDict(this, \"spaceship\", \"A vehicle used for travel in space.\", \"dict-def-r1\")'>spaceship</span> before it leaves the galaxy.", "What is the genre of this book?", "Sci-Fi", "Romance", "Biography", "Sci-Fi"),
+            /* 21 */ bMultipleChoice("mc3", "Comprehension Check", "What is the detective looking for?", "A stolen spaceship", "A glowing light", "A stolen spaceship"),
+            /* 22 */ bInteractiveReading("r2", "Reading II: The Dark Forest", "Read the text. Click the red words for the dictionary.", "The young boy walked into the dark forest. Suddenly, a magical <span class='reading-clickable' onclick='showDict(this, \"creature\", \"An animal or monster, especially a strange one.\", \"dict-def-r2\")'>creature</span> appeared. It had wings of fire and eyes like diamonds. The boy remembered the <span class='reading-clickable' onclick='showDict(this, \"spell\", \"Magic words used to make something happen.\", \"dict-def-r2\")'>spell</span> from his old book and whispered it quietly, hoping to defeat the <span class='reading-clickable' onclick='showDict(this, \"shadows\", \"Dark shapes made when light is blocked.\", \"dict-def-r2\")'>shadows</span>.", "What is the genre of this book?", "Action", "Biography", "Fantasy", "Fantasy"),
+            /* 23 */ bMultipleChoice("mc4", "Comprehension Check", "What did the magical creature look like?", "It had wings of fire", "It was a dark shadow", "It had wings of fire"),
+            
+            /* 24 */ bProfileBuilder(),
+            /* 25 */ bWrap()
+        ];
+
+        // --- RUNTIME LOGIC ---
+        function updateHUD() {
+            const h = document.getElementById('hp-bar'); if(h) h.style.width = Math.max(0, state.hp) + '%';
+            const x = document.getElementById('xp-bar'); if(x) x.style.width = Math.min(100, (state.xp / 120) * 100) + '%';
+            const sCount = document.getElementById('console-counter'); if(sCount) sCount.innerText = `PAGE ${String(state.current + 1).padStart(2, '0')}/${lessonData.length}`;
+        }
+
+        function startMission() {
+            document.getElementById('dashboard').classList.add('hidden'); document.getElementById('dashboard').classList.remove('flex');
+            document.getElementById('hud-top').classList.remove('hidden'); document.getElementById('hud-top').classList.add('flex');
+            document.getElementById('mission-arena').classList.remove('hidden'); document.getElementById('mission-arena').classList.add('flex');
+            document.getElementById('nav-console').classList.remove('hidden'); document.getElementById('nav-console').classList.add('flex');
+            renderStep();
+        }
+        function goHome() {
+            document.getElementById('dashboard').classList.remove('hidden'); document.getElementById('dashboard').classList.add('flex');
+            document.getElementById('hud-top').classList.add('hidden'); document.getElementById('hud-top').classList.remove('flex');
+            document.getElementById('mission-arena').classList.add('hidden'); document.getElementById('mission-arena').classList.remove('flex');
+            document.getElementById('nav-console').classList.add('hidden'); document.getElementById('nav-console').classList.remove('flex');
+            state.current = 0; state.hp = 100; state.xp = 0; updateHUD();
+        }
+        function toggleFullscreen() { if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(err => console.log(err)); } else { if (document.exitFullscreen) document.exitFullscreen(); } }
+        function toggleWhiteboard() { document.getElementById('whiteboard').classList.toggle('active'); document.getElementById('teacher-hud').classList.remove('active'); }
+        function toggleTeacherHUD() { document.getElementById('teacher-hud').classList.toggle('active'); document.getElementById('whiteboard').classList.remove('active'); }
+
+        function renderStep() {
+            if (!lessonData[state.current]) return;
+            const step = lessonData[state.current];
+            const content = document.getElementById('mission-content'); 
+            if(content) content.innerHTML = `<div class="w-full max-w-7xl mx-auto">${step.html}</div>`;
+            updateHUD();
+            document.getElementById('mission-arena').scrollTo(0,0);
+            if (step.title === "Sentence Builder") setTimeout(setupWb, 50);
+        }
+
+        function nextStep() { if (state.current < lessonData.length - 1) { state.current++; renderStep(); } else if(state.current === lessonData.length - 1) { goHome(); } }
+        function prevStep() { if (state.current > 0) { state.current--; renderStep(); } }
+
+        function triggerPraise(main, sub) {
+            document.getElementById('teacher-hud')?.classList.remove('active'); 
+            const overlay = document.getElementById('praise-overlay'); const card = document.getElementById('praise-card');
+            document.getElementById('praise-main').innerText = main; document.getElementById('praise-sub').innerText = sub;
+            
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => card.classList.replace('scale-50', 'scale-100'), 50); 
+            shootConfetti();
+            setTimeout(() => { card.classList.replace('scale-100', 'scale-50'); overlay.classList.add('opacity-0', 'pointer-events-none'); }, 2500);
+        }
+
+        function shootConfetti() {
+            const cCanvas = document.getElementById('confetti-canvas'); 
+            if (!cCanvas) return;
+            const cCtx = cCanvas.getContext('2d');
+            cCanvas.width = window.innerWidth; cCanvas.height = window.innerHeight;
+            const pieces = []; const colors = ['#d4af37', '#fdf6e3', '#3e2723', '#2e8b57']; 
+            for(let i=0; i<60; i++) pieces.push({ x: cCanvas.width/2, y: cCanvas.height/2+50, vx: (Math.random()-0.5)*20, vy: (Math.random()-1)*20-5, size: Math.random()*6+4, color: colors[Math.floor(Math.random()*colors.length)], rot: Math.random()*360, rotSpeed: (Math.random()-0.5)*10 });
+            function animateC() {
+                cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height); let active = false;
+                pieces.forEach(p => {
+                    p.x += p.vx; p.y += p.vy; p.vy += 0.5; p.rot += p.rotSpeed; if(p.y < cCanvas.height) active = true;
+                    cCtx.save(); cCtx.translate(p.x, p.y); cCtx.rotate(p.rot*Math.PI/180); cCtx.fillStyle = p.color; 
+                    cCtx.fillRect(-p.size/2, -p.size/2, p.size, p.size); cCtx.restore();
+                });
+                if(active) requestAnimationFrame(animateC); else cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height);
+            }
+            animateC();
+        }
+
+        // --- SPECIFIC MECHANICS ---
+
+        function selectChoice(el) {
+            document.querySelectorAll('.choice-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById('choice-fb').classList.remove('hidden');
+            state.xp += 5; updateHUD(); shootConfetti();
+        }
+
+        function selectMC(btn, id, selected, correct) {
+            const group = document.getElementById(`mc-group-${id}`);
+            if(group.classList.contains('locked')) return;
+            if(selected === correct) {
+                btn.classList.add('bg-[rgba(46,139,87,0.2)]', 'border-[var(--accent-green)]', 'text-[var(--accent-green)]');
+                document.getElementById(`mc-fb-${id}`).classList.remove('hidden');
+                group.classList.add('locked');
+                state.xp += 5; updateHUD(); shootConfetti();
+            } else {
+                btn.classList.add('shake', 'border-[var(--accent-red)]', 'text-[var(--accent-red)]');
+                state.hp -= 5; updateHUD();
+                setTimeout(() => { btn.classList.remove('shake', 'border-[var(--accent-red)]', 'text-[var(--accent-red)]'); }, 400);
+            }
+        }
+
+        function dragVocabMatch(e, el) { e.dataTransfer.setData('text', el.dataset.word); el.classList.add('dragging'); }
+        function allowDropVocabMatch(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+        function leaveDropVocabMatch(e) { e.currentTarget.classList.remove('drag-over'); }
+        function dropVocabMatch(e, zone, id) { 
+            e.preventDefault(); zone.classList.remove('drag-over'); 
+            const word = e.dataTransfer.getData('text'); 
+            if(word) checkVocabWordMatch(word, zone, id); 
+        }
+        function checkVocabWordMatch(wordStr, zone, id) {
+            const expected = zone.dataset.expected;
+            if(zone.classList.contains('matched')) return;
+            if(wordStr === expected) {
+                zone.innerHTML = `<i class="fas fa-bookmark mr-2"></i> ${wordStr}`;
+                zone.classList.add('matched');
+                const pill = document.getElementById(`vmatch-bank-${id}`).querySelector(`[data-word="${wordStr}"]`);
+                if(pill) pill.style.display = 'none';
+                state.xp += 2; updateHUD(); 
+                const allMatched = Array.from(document.getElementById(`vmatch-grid-${id}`).querySelectorAll('.match-dropzone')).every(dz => dz.classList.contains('matched'));
+                if(allMatched) { document.getElementById(`vmatch-fb-${id}`).classList.remove('hidden'); shootConfetti(); }
+            } else {
+                zone.classList.add('shake', 'text-[var(--accent-red)]', 'border-[var(--accent-red)]'); state.hp -= 5; updateHUD();
+                setTimeout(() => zone.classList.remove('shake', 'text-[var(--accent-red)]', 'border-[var(--accent-red)]'), 400);
+            }
+        }
+
+        function dragBucket(e, el) { e.dataTransfer.setData('text', el.innerText.trim()); e.dataTransfer.setData('target', el.dataset.target); el.classList.add('dragging'); }
+        function allowDropBucket(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+        function leaveDropBucket(e) { e.currentTarget.classList.remove('drag-over'); }
+        function dropBucket(e, zone, id, total) {
+            e.preventDefault(); zone.classList.remove('drag-over');
+            const target = e.dataTransfer.getData('target');
+            const word = e.dataTransfer.getData('text');
+            const bucketName = zone.dataset.bucket;
+            if(target === bucketName) {
+                const bank = document.getElementById(`bucket-bank-${id}`);
+                const pill = Array.from(bank.children).find(c => c.innerText.trim() === word);
+                if(pill) {
+                    pill.classList.add('dropped');
+                    pill.draggable = false;
+                    zone.querySelector('.bucket-items').appendChild(pill);
+                    state.xp += 2; updateHUD();
+                    if(bank.children.length === 0) { document.getElementById(`bucket-fb-${id}`).classList.remove('hidden'); shootConfetti(); }
+                }
+            } else {
+                zone.classList.add('shake', 'border-[var(--accent-red)]'); state.hp -= 5; updateHUD();
+                setTimeout(() => zone.classList.remove('shake', 'border-[var(--accent-red)]'), 400);
+            }
+        }
+
+        function toggleTuner(id, wrong, right, rule) {
+            const track = document.getElementById(`tuner-track-${id}`);
+            const textEl = document.getElementById(`tuner-text-${id}`);
+            if(!track.classList.contains('active')) {
+                track.classList.add('active');
+                textEl.innerHTML = right.replace(/\[(.*?)\]/g, `<span class="text-[var(--accent-green)] font-bold">$1</span>`); 
+                textEl.classList.replace('text-[var(--accent-red)]', 'text-[var(--ink-main)]');
+                document.getElementById(`mode-aff-${id}`).classList.replace('text-slate-500', 'text-slate-600');
+                document.getElementById(`mode-alt-${id}`).classList.replace('text-slate-500', 'text-[var(--accent-green)]');
+                document.getElementById(`tuner-fb-${id}`).classList.remove('hidden');
+                state.xp += 5; updateHUD(); shootConfetti();
+            }
+        }
+
+        let activeMatch = null; let matchesMatched = 0;
+        function handleMatch(node) {
+            if (node.classList.contains('matched')) return;
+            if (!activeMatch) { activeMatch = node; node.classList.add('active'); } 
+            else {
+                if (activeMatch.dataset.type !== node.dataset.type && activeMatch.dataset.id === node.dataset.id) {
+                    activeMatch.classList.replace('active', 'matched'); node.classList.add('matched');
+                    activeMatch = null; matchesMatched++; state.xp += 5; updateHUD();
+                    if(matchesMatched === document.getElementById('match-board').children[0].children[0].children.length) { document.getElementById('match-hub').classList.remove('hidden'); shootConfetti(); matchesMatched = 0; }
+                } else {
+                    activeMatch.classList.remove('active'); activeMatch.classList.add('shake', 'border-[var(--accent-red)]', 'text-[var(--accent-red)]'); 
+                    node.classList.add('shake', 'border-[var(--accent-red)]', 'text-[var(--accent-red)]'); state.hp -= 5; updateHUD();
+                    setTimeout(() => { 
+                        activeMatch.classList.remove('shake', 'border-[var(--accent-red)]', 'text-[var(--accent-red)]'); 
+                        node.classList.remove('shake', 'border-[var(--accent-red)]', 'text-[var(--accent-red)]'); activeMatch = null; 
+                    }, 400);
+                }
+            }
+        }
+
+        function checkGap(input) {
+            const ans = input.dataset.ans.toLowerCase();
+            const val = input.value.trim().toLowerCase();
+            if(val === ans) {
+                input.classList.remove('error'); input.classList.add('correct'); input.value = input.dataset.ans;
+                state.xp += 2; updateHUD();
+                const container = input.closest('.magic-page');
+                const allDone = Array.from(container.querySelectorAll('.gap-input')).every(i => i.classList.contains('correct'));
+                if(allDone) { container.nextElementSibling.classList.remove('hidden'); shootConfetti(); }
+            } else if(val.length >= ans.length) {
+                input.classList.add('error'); state.hp -= 2; updateHUD();
+                setTimeout(() => { input.classList.remove('error'); input.value = ''; }, 400);
+            }
+        }
+
+        let wbState = {};
+        function setupWb() { document.querySelectorAll('[id^="wb-data-"]').forEach(el => { const id = el.id.replace('wb-data-', ''); wbState[id] = { current: [], expected: JSON.parse(el.getAttribute('data-expected')) }; }); }
+        function moveTypeWord(pill, word, id) {
+            if(pill.classList.contains('used') || !wbState[id]) return;
+            wbState[id].current.push(word); pill.classList.add('used');
+            const dz = document.getElementById(`wb-dropzone-${id}`);
+            const newPill = document.createElement('span'); 
+            newPill.className = 'font-book text-2xl text-[var(--accent-gold)] font-bold bg-[var(--bg-wood)] border border-[#ffdf73] px-6 py-3 rounded shadow-[0_4px_10px_rgba(0,0,0,0.4)]'; 
+            newPill.innerText = word; dz.appendChild(newPill);
+            
+            if(wbState[id].current.length === wbState[id].expected.length) {
+                if(wbState[id].current.every((val, index) => val === wbState[id].expected[index])) { 
+                    dz.classList.add('border-[var(--accent-green)]', 'bg-[rgba(46,139,87,0.1)]');
+                    document.getElementById(`wb-fb-${id}`).classList.remove('hidden'); state.xp += 5; updateHUD(); shootConfetti(); 
+                } else { 
+                    dz.classList.add('shake', 'border-[var(--accent-red)]'); state.hp -= 5; updateHUD();
+                    setTimeout(() => dz.classList.remove('shake', 'border-[var(--accent-red)]'), 400); 
+                }
+            }
+        }
+        function resetWb(id) {
+            if(!wbState[id]) return; wbState[id].current = []; 
+            const dz = document.getElementById(`wb-dropzone-${id}`); dz.innerHTML = ''; dz.classList.remove('border-[var(--accent-green)]', 'bg-[rgba(46,139,87,0.1)]');
+            document.getElementById(`wb-fb-${id}`).classList.add('hidden');
+            document.getElementById(`wb-bank-${id}`).querySelectorAll('.build-pill').forEach(p => p.classList.remove('used'));
+        }
+
+        // New Interactive Reading Mechanic
+        function showDict(el, word, definition, dictId) {
+            const container = el.closest('.magic-page');
+            container.querySelectorAll('.reading-clickable').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            
+            const dict = document.getElementById(dictId);
+            dict.innerHTML = `<span class="text-3xl text-[var(--accent-gold)] font-bold font-magic block mb-3 uppercase tracking-widest">${word}</span><span class="text-lg text-white font-light leading-relaxed">${definition}</span>`;
+            
+            dict.parentElement.classList.remove('animate-in', 'fade-in');
+            void dict.parentElement.offsetWidth; // trigger reflow
+            dict.parentElement.classList.add('animate-in', 'fade-in');
+        }
+
+        function selectReadGenre(btn, id, selected, correct) {
+            const group = document.getElementById(`read-quiz-${id}`);
+            if(group.classList.contains('locked')) return;
+
+            if(selected === correct) {
+                btn.classList.add('bg-[rgba(46,139,87,0.2)]', 'border-[var(--accent-green)]', 'text-[var(--accent-green)]');
+                document.getElementById(`read-fb-${id}`).classList.remove('hidden');
+                group.classList.add('locked');
+                state.xp += 5; updateHUD(); shootConfetti();
+            } else {
+                btn.classList.add('shake', 'border-[var(--accent-red)]', 'text-[var(--accent-red)]');
+                state.hp -= 5; updateHUD();
+                setTimeout(() => { btn.classList.remove('shake', 'border-[var(--accent-red)]', 'text-[var(--accent-red)]'); }, 400);
+            }
+        }
+
+        function generateProfile() {
+            const name = document.getElementById('p-name').value;
+            const genre = document.getElementById('p-genre').value;
+            const book = document.getElementById('p-book').value;
+            
+            if(!name || !genre || !book) {
+                document.getElementById('profile-form').classList.add('shake', 'border-[var(--accent-red)]');
+                setTimeout(() => document.getElementById('profile-form').classList.remove('shake', 'border-[var(--accent-red)]'), 400);
+                return;
+            }
+
+            document.getElementById('res-name').innerText = name.toUpperCase();
+            document.getElementById('res-name-2').innerText = name;
+            document.getElementById('res-genre').innerText = genre;
+            document.getElementById('res-book').innerText = book;
+
+            document.getElementById('profile-form').classList.add('hidden');
+            document.getElementById('profile-result').classList.remove('hidden');
+            document.getElementById('profile-result').classList.add('animate-in', 'fade-in');
+            
+            state.xp += 10; updateHUD(); shootConfetti();
+        }
+        
+        window.onload = () => { updateHUD(); goHome(); };
+    </script>
+</body>
+</html>
